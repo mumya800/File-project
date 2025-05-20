@@ -3,19 +3,7 @@
 #include <string.h>
 #include "filesystem.h"
 
-FILE *fp;
-fp = fopen("file.txt", "w"); 
-
-if (fp == NULL) {
-    perror("Ошибка при открытии файла");
-    return 1; 
-}
-
-// ... (операции с файлом)
-
-fclose(fp); 
-
-
+// просмотр файла внутри файловой системы
 static int find_index(const FileSystem *fs, const char *path) {
     for (size_t i = 0; i < fs->count; ++i)
         if (strcmp(fs->entries[i].path, path) == 0)
@@ -23,9 +11,23 @@ static int find_index(const FileSystem *fs, const char *path) {
     return -1;
 }
 
+// открытие файла
+int fs_load(const char *fname, FileSystem *fs) {
+    FILE *f = fopen(fname, "r");
+    if (!f) {                        
+        fs->entries = NULL;
+        fs->count = 0;
+        return 0;
+    }
 
-if (remove("file.txt") == 0) {
-    printf("Файл успешно удален.\n");
-} else {
-    perror("Ошибка при удалении файла");
+// удаление файла из файловой системы
+int fs_delete(FileSystem *fs, const char *path) {
+    int idx = find_index(fs, path);
+    if (idx < 0) return -1;
+    free(fs->entries[idx].path);
+    free(fs->entries[idx].content);
+    memmove(&fs->entries[idx], &fs->entries[idx + 1],
+            (fs->count - idx - 1) * sizeof(FileEntry));
+    fs->count--;
+    return 0;
 }
