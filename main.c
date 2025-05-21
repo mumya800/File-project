@@ -5,7 +5,6 @@
 
 #include "filesystem.h"
 
-/* путь к контейнеру ФС */
 static const char *FS_PATH = "disk.filesystem";
 
 static void trim_trailing_newline(char *s) {
@@ -21,10 +20,6 @@ static void print_usage(void) {
     puts("  UPDATE <path>");
     puts("       (завершите ввод строкой только с точкой '.')");
     puts("  DELETE <path>");
-    puts("  CRYPTO <path> <key>");
-    puts("  DECRYPTO <path> <key>");
-    puts("  COUNT");
-    puts("  RENAME <oldPath> <newPath>");
     puts("  EXIT");
 }
 
@@ -90,27 +85,8 @@ int main(void) {
             if (buf) buf[len] = '\0';
             puts(fs_update(&fs, path, buf ? buf : "") == 0 ? "Перезаписано" : "Файл не найден");
             free(buf);
-        } else if (strcmp(cmd, "COUNT") == 0) {
-            printf("%zu\n", fs_count(&fs));
-        } else if (strcmp(cmd, "CRYPTO") == 0) {
-            char *path = strtok(NULL, " ");
-            char *key  = strtok(NULL, "");
-            if (!path || !key) { puts("Нужно: CRYPTO <path> <key>"); continue; }
-            puts(fs_crypto(&fs, path, key) == 0 ? "Зашифровано" : "Ошибка");
-        } else if (strcmp(cmd, "DECRYPTO") == 0) {
-            char *path = strtok(NULL, " ");
-            char *key  = strtok(NULL, "");
-            if (!path || !key) { puts("Нужно: DECRYPTO <path> <key>"); continue; }
-            puts(fs_decrypto(&fs, path, key) == 0 ? "Расшифровано" : "Ошибка");
-        } else if (strcmp(cmd, "RENAME") == 0) {
-            char *oldp = strtok(NULL, " ");
-            char *newp = strtok(NULL, "");
-            if (!oldp || !newp) { puts("Нужно: RENAME <old> <new>"); continue; }
-            int rc = fs_rename(&fs, oldp, newp);
-            if (rc == 0)           puts("Переименовано");
-            else if (rc == -2)     puts("Файл с таким именем уже есть");
-            else                   puts("Файл не найден");
-        } else {
+        } 
+        else {
             puts("Неизвестная команда или опечатка");
         }
     }
