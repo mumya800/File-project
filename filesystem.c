@@ -20,6 +20,30 @@ int fs_load(const char *fname, FileSystem *fs) {
         return 0;
     }
 
+// Добавление нового элемента (файла) в файловую систему
+int fs_insert(FileSystem *fs, const char *path) {
+    if (find_index(fs, path) >= 0) return -1;    
+
+    FileEntry *tmp = realloc(fs->entries, (fs->count + 1) * sizeof *tmp);
+    if (!tmp) return -1;
+    fs->entries = tmp;
+
+    fs->entries[fs->count].path = strdup(path);
+    fs->entries[fs->count].content = strdup("");
+    fs->count++;
+    return 0;
+}  
+
+4. Обновление содержимого существующего файла в файловой системе.
+int fs_update(FileSystem *fs, const char *path, const char *new_content) {
+    int idx = find_index(fs, path);
+    if (idx < 0) return -1;
+    free(fs->entries[idx].content);
+    fs->entries[idx].content = strdup(new_content);
+    return 0;
+}
+
+
 // удаление файла из файловой системы
 int fs_delete(FileSystem *fs, const char *path) {
     int idx = find_index(fs, path);
