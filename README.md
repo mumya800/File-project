@@ -152,3 +152,23 @@ int fs_delete(FileSystem *fs, const char *path) {
     return 0;
 }  
 ```
+## Принцип использования команд
+```
+> INSERT /hello.txt
+Готово
+> UPDATE /hello.txt
+Введите новые данные (строка "." завершает ввод):
+Привет, мир!
+.
+Перезаписано
+> COUNT
+1
+> CRYPTO /hello.txt mykey
+Зашифровано
+> DECRYPTO /hello.txt mykey
+Расшифровано
+> RENAME /hello.txt /docs/hello.txt
+Переименовано
+> EXIT
+Изменения сохранены. Пока!
+```
