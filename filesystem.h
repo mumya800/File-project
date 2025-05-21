@@ -11,20 +11,10 @@ typedef struct {
     size_t     count;
 } FileSystem;
 
-
+int 
 int  fs_load (const char *fname, FileSystem *fs);
-int  fs_save (const char *fname, const FileSystem *fs);
-void fs_free (FileSystem *fs);
-
-
-int  fs_select(const FileSystem *fs, const char *path, char **out_content);
 int  fs_insert(FileSystem *fs, const char *path);
 int  fs_update(FileSystem *fs, const char *path, const char *new_content);
 int  fs_delete(FileSystem *fs, const char *path);
-
-int    fs_crypto (FileSystem *fs, const char *path, const char *key);
-int    fs_decrypto(FileSystem *fs, const char *path, const char *key);
-size_t fs_count  (const FileSystem *fs);
-int    fs_rename (FileSystem *fs, const char *old_path, const char *new_path);
 
 #endif 
